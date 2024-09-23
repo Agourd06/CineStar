@@ -3,6 +3,7 @@ const router = express.Router();
 const AdminController = require('../controller/AdminController');
 const MovieController = require('../controller/MovieController');
 const RoomController = require('../controller/RoomController');
+const SessionController = require('../controller/SessionController');
 
 //------------------------ Admins CRUD------------------------
 router.post("/create",AdminController.createAdmin)
@@ -28,6 +29,17 @@ router.post("/room/create",RoomController.createroom)
 router.get("/rooms",RoomController.getAllRooms)
 router.put("/room/update/:id",RoomController.updateRoom)
 router.put("/room/delete/:id",RoomController.deleteRoom)
+//------------------------ Room CRUD------------------------
+
+
+
+
+//------------------------ Room CRUD------------------------
+router.post("/session/create",SessionController.createSession)
+// router.get("/rooms",RoomController.getAllRooms)
+// router.put("/room/update/:id",RoomController.updateRoom)
+// router.put("/room/delete/:id",RoomController.deleteRoom)
+router.put("/room/status/update",SessionController.updateSessionsStatus)
 //------------------------ Room CRUD------------------------
 
 
