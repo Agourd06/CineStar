@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AdminController = require('../controller/AdminController');
 const MovieController = require('../controller/MovieController');
+const RoomController = require('../controller/RoomController');
 
 //------------------------ Admins CRUD------------------------
 router.post("/create",AdminController.createAdmin)
@@ -23,10 +24,10 @@ router.put("/movie/delete/:id",MovieController.deleteMovie)
 
 
 //------------------------ Room CRUD------------------------
-// router.post("/room/create",RoomController.createroom)
-// router.get("/rooms",RoomController.getAllrooms)
-// router.put("/room/update/:id",RoomController.updateroom)
-// router.put("/room/delete/:id",RoomController.deleteroom)
+router.post("/room/create",RoomController.createroom)
+router.get("/rooms",RoomController.getAllRooms)
+router.put("/room/update/:id",RoomController.updateRoom)
+router.put("/room/delete/:id",RoomController.deleteRoom)
 //------------------------ Room CRUD------------------------
 
 

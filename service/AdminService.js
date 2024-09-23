@@ -11,6 +11,9 @@ const createAdmin = async (adminData) => {
   }
 }
 
+
+
+
 const getAdmins = async () => {
   try {
     const admins = await User.find({
@@ -22,6 +25,9 @@ const getAdmins = async () => {
     throw new Error('Error fetching admins: ' + error.message);
   }
 };
+
+
+
 
 const updateAdmins = async (AdminId, adminUpdateData) => {
   try {
@@ -38,6 +44,9 @@ const updateAdmins = async (AdminId, adminUpdateData) => {
 
   }
 };
+
+
+
 
 const softDeleteAdmins = async (AdminId) => {
   try {

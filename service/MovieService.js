@@ -12,6 +12,10 @@ const createMovie = async (movieData) => {
 
 }
 
+
+
+
+
 const getAllMovies = async () => {
     try {
         const movies = await Movie.find({
@@ -23,6 +27,10 @@ const getAllMovies = async () => {
         throw new Error('Error fetching movies: ' + error.message);
     }
 }
+
+
+
+
 
 const updateMovie = async (movieId, movieData) => {
     try {
@@ -37,6 +45,12 @@ const updateMovie = async (movieId, movieData) => {
         throw new Error('Error updating movie: ' + error.message);
     }
 }
+
+
+
+
+
+
 const deleteMovie = async (movieId) => {
     try {
         const deletedMovie = await Movie.findOneAndUpdate({
