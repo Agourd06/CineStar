@@ -19,9 +19,10 @@ const login = async (email, password) => {
   if (!passwordMatch) {
     return null;
   }
-
+//My secret Key
   SecretKey = process.env.SECRET;
 
+  //checking for user and store Token
   const token = jwt.sign({
     userId: user._id
   }, SecretKey, {

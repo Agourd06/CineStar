@@ -30,7 +30,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    
+
     const newUser = await authService.register(req.body);
     res.status(201).json({
       message: 'User created successfully',

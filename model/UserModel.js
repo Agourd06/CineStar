@@ -24,6 +24,10 @@ const userSchema = mongoose.Schema(
         role: {
             type: String,
             required: [true, "role field is obligatory"],
+        },
+        deleted_at: {
+            type: Date, 
+            default: null,
         }
     }, {
         timestamps: true
