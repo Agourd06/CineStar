@@ -39,6 +39,28 @@ const getAllMovies = async (req, res) => {
         });
     }
 }
+
+
+const editMovie = async (req, res) => {
+    try {
+
+        const {
+            id
+        } = req.params
+        const movie = await movieService.editMovie(id);
+
+        res.status(200).json({
+            success: true,
+            data: movie
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 const updateMovie = async (req, res) => {
     try {
         const {
@@ -90,6 +112,7 @@ const deleteMovie = async (req, res) => {
 module.exports = {
     createMovie,
     getAllMovies,
+    editMovie,
     updateMovie,
     deleteMovie
 }

@@ -31,6 +31,19 @@ const getAllRooms = async () => {
     }
 }
 
+const editRoom = async (roomId) => {
+
+
+    try {
+        const room = await Room.find({
+            _id: roomId,
+            deleted_at: null
+        });
+        return room;
+    } catch (error) {
+        throw new Error('Error fetching Room: ' + error.message);
+    }
+}
 
 
 
@@ -72,6 +85,7 @@ const deleteRoom = async (roomId) => {
 module.exports = {
     createroom,
     getAllRooms,
+    editRoom,
     updateRoom,
     deleteRoom
 }

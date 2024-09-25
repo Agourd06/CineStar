@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const adminRoute = require('./routes/AdminRoute.js')
+const clientRoute = require('./routes/ClientRoute.js')
 const authRoute = require('./routes/authRoute.js')
 require('dotenv').config();
 const dbConnect = require('./config/dataBase')
@@ -12,7 +13,7 @@ dbConnect();
 app.use(express.json());
 app.use('/api/admin',verifyToken, adminRoute);
 app.use('/api/auth', authRoute);
-
+app.use('/api/client',verifyToken,clientRoute)
 
 
 const PORT = process.env.PORT || 3000;

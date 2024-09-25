@@ -28,6 +28,20 @@ const getAllMovies = async () => {
     }
 }
 
+const editMovie = async (movieId) => {
+
+
+    try {
+        const movie = await Movie.find({
+            _id: movieId,
+            deleted_at: null
+        });
+        return movie;
+    } catch (error) {
+        throw new Error('Error fetching Movie: ' + error.message);
+    }
+}
+
 
 
 
@@ -62,13 +76,14 @@ const deleteMovie = async (movieId) => {
         });
         return deletedMovie
     } catch (error) {
-        throw new Error('Error updating movie: ' + error.message);
+        throw new Error('Error deleting movie: ' + error.message);
     }
 }
 
 module.exports = {
     createMovie,
     getAllMovies,
+    editMovie,
     updateMovie,
     deleteMovie
 }

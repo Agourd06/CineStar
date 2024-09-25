@@ -14,7 +14,7 @@ const createSession = async (sessionData) => {
 }
 
 
-const getAllSessions = async () => {
+const getAdminSessions = async () => {
     try {
         const sessions = await Session.find({
             deleted_at: null
@@ -22,7 +22,53 @@ const getAllSessions = async () => {
 
         return sessions;
     } catch (error) {
-        throw new Error('Error fetching rooms: ' + error.message);
+        throw new Error('Error fetching Sessions: ' + error.message);
+    }
+}
+
+const editSession = async (sessionId) => {
+
+
+    try {
+        const session = await Session.find({
+            _id: sessionId,
+            deleted_at: null
+        });
+        return session;
+    } catch (error) {
+        throw new Error('Error fetching Session: ' + error.message);
+    }
+}
+
+
+
+const updateSession = async (sessionId, sessionData) => {
+    try {
+        const updatedSession = await Session.findOneAndUpdate({
+                _id: sessionId
+            },
+            sessionData, {
+                new: true
+            });
+        return updatedSession
+    } catch (error) {
+        throw new Error('Error updating Session: ' + error.message);
+    }
+}
+
+
+const deleteSession = async (sessionId) => {
+    try {
+        const deletedSession = await Session.findOneAndUpdate({
+            _id: sessionId
+        }, {
+            deleted_at: new Date()
+        }, {
+            new: true
+        });
+        return deletedSession
+    } catch (error) {
+        throw new Error('Error updating Session: ' + error.message);
     }
 }
 
@@ -32,32 +78,55 @@ const getAllSessions = async () => {
 
 
 
-// -----------------Code for update status of sessios-----------------
-const updateAllSessionsStatus = async () => {
-    const currentTime = moment();
 
-    const sessions = await Session.find({ deleted_at: null });
+// ---------------------------CLIENT FUNCTIONS------------------------
 
-    for (let session of sessions) {
-        const sessionTime = moment(session.displayTime);
 
-        if (currentTime.isBefore(sessionTime)) {
-            session.status = 'upcoming';
-        } else if (currentTime.isSameOrAfter(sessionTime)) {
-            session.status = 'completed';
+
+const getClientSessions = async () => {
+    try {
+        const sessions = await Session.find({
+            deleted_at: null
+        });
+
+        const validSessions = [];
+        const currentTime = moment();
+
+        for (let session of sessions) {
+            const sessionTime = moment(session.displayTime);
+
+            if (currentTime.isBefore(sessionTime)) {
+                validSessions.push(session);
+            }
         }
 
-        await session.save(); 
+        return validSessions;
+
+    } catch (error) {
+        throw new Error('Error fetching Sessions: ' + error.message);
     }
+}
 
-    return sessions; 
-};
 
-// -----------------Code for update status of sessios-----------------
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = {
     createSession,
-    updateAllSessionsStatus,
-    getAllSessions
+    getAdminSessions,
+    editSession,
+    updateSession,
+    deleteSession
 }

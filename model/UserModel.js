@@ -23,6 +23,7 @@ const userSchema = mongoose.Schema(
         },
         role: {
             type: String,
+            enum: ['admin', 'client'],
             required: [true, "role field is obligatory"],
         },
         deleted_at: {

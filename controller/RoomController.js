@@ -42,6 +42,28 @@ const getAllRooms = async (req, res) => {
 
 
 
+const editRoom = async (req, res) => {
+    try {
+
+        const {
+            id
+        } = req.params
+        const Room = await roomService.editRoom(id);
+
+        res.status(200).json({
+            success: true,
+            data: Room
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+
+
 const updateRoom = async (req, res) => {
     try {
         const {
@@ -98,6 +120,7 @@ const deleteRoom = async (req, res) => {
 module.exports = {
     createroom,
     getAllRooms,
+    editRoom,
     updateRoom,
     deleteRoom
 }

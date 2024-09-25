@@ -26,7 +26,20 @@ const getAdmins = async () => {
   }
 };
 
+const editAdmin = async (adminId) => {
 
+
+  try {
+    const admin = await User.find({
+      _id: adminId,
+      role: 'admin',
+      deleted_at: null
+    });
+    return admin;
+  } catch (error) {
+    throw new Error('Error fetching admin: ' + error.message);
+  }
+}
 
 
 const updateAdmins = async (AdminId, adminUpdateData) => {
@@ -50,12 +63,14 @@ const updateAdmins = async (AdminId, adminUpdateData) => {
 
 const softDeleteAdmins = async (AdminId) => {
   try {
-    const admin = await User.findOneAndUpdate(
-      { _id: AdminId },
-      { deleted_at: new Date() }, 
-      { new: true }
-    );
-    
+    const admin = await User.findOneAndUpdate({
+      _id: AdminId
+    }, {
+      deleted_at: new Date()
+    }, {
+      new: true
+    });
+
     if (!admin) {
       throw new Error('Admin not found');
     }
@@ -71,6 +86,7 @@ const softDeleteAdmins = async (AdminId) => {
 module.exports = {
   createAdmin,
   getAdmins,
+  editAdmin,
   updateAdmins,
   softDeleteAdmins
 };
