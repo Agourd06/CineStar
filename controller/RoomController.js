@@ -42,13 +42,13 @@ const getAllRooms = async (req, res) => {
 
 
 
-const editRoom = async (req, res) => {
+const getRoom = async (req, res) => {
     try {
 
         const {
             id
         } = req.params
-        const Room = await roomService.editRoom(id);
+        const Room = await roomService.getRoom(id);
 
         res.status(200).json({
             success: true,
@@ -120,7 +120,7 @@ const deleteRoom = async (req, res) => {
 module.exports = {
     createroom,
     getAllRooms,
-    editRoom,
+    getRoom,
     updateRoom,
     deleteRoom
 }

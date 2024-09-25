@@ -8,7 +8,7 @@ const SessionController = require('../controller/SessionController');
 //------------------------ Admins CRUD------------------------
 router.post("/create",AdminController.createAdmin)
 router.get("/admins",AdminController.getAdmins)
-router.get("/:id",AdminController.editAdmin)
+router.get("/:id",AdminController.getAdmin)
 router.put("/update/:id",AdminController.updateAdmins)
 router.put("/delete/:id",AdminController.softDeleteAdmins)
 //------------------------ Admins CRUD------------------------
@@ -19,7 +19,7 @@ router.put("/delete/:id",AdminController.softDeleteAdmins)
 //------------------------ Movie CRUD------------------------
 router.post("/movie/create",MovieController.createMovie)
 router.get("/movies",MovieController.getAllMovies)
-router.get("/movie/:id",MovieController.editMovie)
+router.get("/movie/:id",MovieController.getMovie)
 router.put("/movie/update/:id",MovieController.updateMovie)
 router.put("/movie/delete/:id",MovieController.deleteMovie)
 //------------------------ Movie CRUD------------------------
@@ -29,7 +29,7 @@ router.put("/movie/delete/:id",MovieController.deleteMovie)
 //------------------------ Room CRUD------------------------
 router.post("/room/create",RoomController.createroom)
 router.get("/rooms",RoomController.getAllRooms)
-router.get("/room/:id",RoomController.editRoom)
+router.get("/room/:id",RoomController.getRoom)
 router.put("/room/update/:id",RoomController.updateRoom)
 router.put("/room/delete/:id",RoomController.deleteRoom)
 //------------------------ Room CRUD------------------------
@@ -40,7 +40,7 @@ router.put("/room/delete/:id",RoomController.deleteRoom)
 //------------------------ Session CRUD------------------------
 router.post("/session/create",SessionController.createSession)
 router.get("/sessions",SessionController.getAdminSessions)
-router.get("/session/:id",SessionController.editSession)
+router.get("/session/:id",SessionController.getSession)
 router.put("/session/update/:id",SessionController.updateSession)
 router.put("/session/delete/:id",SessionController.deleteSession)
 //------------------------ Session CRUD------------------------

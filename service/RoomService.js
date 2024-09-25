@@ -31,11 +31,11 @@ const getAllRooms = async () => {
     }
 }
 
-const editRoom = async (roomId) => {
+const getRoom = async (roomId) => {
 
 
     try {
-        const room = await Room.find({
+        const room = await Room.findOne({
             _id: roomId,
             deleted_at: null
         });
@@ -85,7 +85,7 @@ const deleteRoom = async (roomId) => {
 module.exports = {
     createroom,
     getAllRooms,
-    editRoom,
+    getRoom,
     updateRoom,
     deleteRoom
 }

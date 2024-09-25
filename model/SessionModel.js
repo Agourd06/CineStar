@@ -24,11 +24,6 @@ const SessionSchema = mongoose.Schema(
             type: Date,
             required: [true, "Display time is obligatory"]
         },
-        status: {
-            type: String,
-            enum: ['ongoing', 'completed', 'upcoming'],
-            required: [true, "Please specify the session status"]
-        },
         deleted_at: {
             type: Date,
             default: null,

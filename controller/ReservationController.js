@@ -1,4 +1,6 @@
 const reservationService = require("../service/ReservationService");
+const clientService = require("../service/ClientService");
+const mailerService = require("../service/MailerService");
 const {
     UserId
 } = require('../helpers/helpers');
@@ -11,18 +13,32 @@ const createReservation = async (req, res) => {
             session
         } = req.body;
         let userId = UserId(req);
+       const client = await clientService.getClient(userId)
+        // Checking if seat reserved already exist or not
+        const alreadyTakenSeats = await reservationService.checkAvailableSeats(session, seat);
+console.log(client[0].email);
 
-        const sessionData = await reservationService.sessionReserv(session);
+        if (alreadyTakenSeats.length > 0) {
+            return res.status(400).json({
+                message: "there is Some taken seat chosed please check again for avaibility",
+                takenSeats: alreadyTakenSeats
+            });
+        }
+
+        // Calculate The price of reservations
+        const sessionData = await reservationService.reservSession(session);
         const seatPrice = sessionData.price;
-
         const totalPrice = seat.length * seatPrice;
 
+        //create the resrvation
         const reservation = await reservationService.createReservation({
             seat,
             client: userId,
             session,
             totalPrice
         });
+
+        await mailerService.sendReservationEmail("agourdahmedamine96@gmail.com", reservation);
 
         res.status(201).json({
             message: "Reservation created successfully",
@@ -36,6 +52,7 @@ const createReservation = async (req, res) => {
         });
     }
 };
+
 
 
 const clientReservations = async (req, res) => {
@@ -57,13 +74,57 @@ const clientReservations = async (req, res) => {
     }
 }
 
+const getReservation = async (req, res) => {
+    try {
+
+        const {
+            id
+        } = req.params
+        const reservation = await reservationService.getReservation(id);
+
+        res.status(200).json({
+            success: true,
+            data: reservation
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+const updateReserv = async (req, res) => {
+    try {
+        const {
+            id
+        } = req.params
+        const updatedReserv = await reservationService.updateReserv(id, req.body)
+        if (!updatedReserv) {
+            return res.status(404).send("reservation not found")
+
+        }
+        res.status(200).json({
+            message: "reservation updated successfully",
+            data: updatedReserv
+        })
+    } catch (error) {
+        console.error("error deleting reservation", error)
+
+        res.status(500).json({
+            message: "Failed to delete reservation",
+            error: error.message
+        })
+    }
+}
+
 
 const cancelReserv = async (req, res) => {
     try {
-      const {
-        id
-      }   = req.params
-        
+        const {
+            id
+        } = req.params
+
         const cancledReserv = await reservationService.cancelReserv(id);
         if (!cancledReserv) {
             return res.status(404).send("reservation not found")
@@ -88,5 +149,7 @@ const cancelReserv = async (req, res) => {
 module.exports = {
     createReservation,
     clientReservations,
+    getReservation,
+    updateReserv,
     cancelReserv
 }

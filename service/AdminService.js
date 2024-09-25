@@ -26,11 +26,11 @@ const getAdmins = async () => {
   }
 };
 
-const editAdmin = async (adminId) => {
+const getAdmin = async (adminId) => {
 
 
   try {
-    const admin = await User.find({
+    const admin = await User.findOne({
       _id: adminId,
       role: 'admin',
       deleted_at: null
@@ -86,7 +86,7 @@ const softDeleteAdmins = async (AdminId) => {
 module.exports = {
   createAdmin,
   getAdmins,
-  editAdmin,
+  getAdmin,
   updateAdmins,
   softDeleteAdmins
 };

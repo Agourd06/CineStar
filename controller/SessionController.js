@@ -41,13 +41,13 @@ const getAdminSessions = async (req, res) => {
 
 
 
-const editSession = async (req, res) => {
+const getSession = async (req, res) => {
     try {
 
         const {
             id
         } = req.params
-        const Session = await sessionService.editSession(id);
+        const Session = await sessionService.getSession(id);
 
         res.status(200).json({
             success: true,
@@ -107,13 +107,47 @@ const deleteSession = async (req, res) => {
 }
 
 
+// --------------client Session--------------------
+const getUpcomingSessions = async (req, res) => {
+    try {
+        const upcomingSessions = await sessionService.getClientSessions(); 
+        return res.status(200).json(upcomingSessions); 
+    } catch (error) {
+        console.error(error.message); 
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+const getSessionDetails = async (req, res) => {
+    try {
+
+        const {
+            id
+        } = req.params
+        const Session = await sessionService.getSessionDetails(id);
+
+        res.status(200).json({
+            success: true,
+            data: Session
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
 
 
 
 module.exports = {
     createSession,
     getAdminSessions,
-    editSession,
+    getSession,
     updateSession,
-    deleteSession
+    deleteSession,
+    getUpcomingSessions,
+    getSessionDetails
 }

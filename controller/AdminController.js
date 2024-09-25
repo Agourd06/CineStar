@@ -41,13 +41,13 @@ const getAdmins = async (req, res) => {
     }
 };
 
-const editAdmin = async (req, res) => {
+const getAdmin = async (req, res) => {
     try {
 
         const {
             id
         } = req.params
-        const admin = await AdminService.editAdmin(id);
+        const admin = await AdminService.getAdmin(id);
 
         res.status(200).json({
             success: true,
@@ -123,7 +123,7 @@ const softDeleteAdmins = async (req, res) => {
 module.exports = {
     createAdmin,
     getAdmins,
-    editAdmin,
+    getAdmin,
     updateAdmins,
     softDeleteAdmins
 };

@@ -41,13 +41,13 @@ const getAllMovies = async (req, res) => {
 }
 
 
-const editMovie = async (req, res) => {
+const getMovie = async (req, res) => {
     try {
 
         const {
             id
         } = req.params
-        const movie = await movieService.editMovie(id);
+        const movie = await movieService.getMovie(id);
 
         res.status(200).json({
             success: true,
@@ -112,7 +112,7 @@ const deleteMovie = async (req, res) => {
 module.exports = {
     createMovie,
     getAllMovies,
-    editMovie,
+    getMovie,
     updateMovie,
     deleteMovie
 }

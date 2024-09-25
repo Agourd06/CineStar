@@ -28,11 +28,11 @@ const getAllMovies = async () => {
     }
 }
 
-const editMovie = async (movieId) => {
+const getMovie = async (movieId) => {
 
 
     try {
-        const movie = await Movie.find({
+        const movie = await Movie.findOne({
             _id: movieId,
             deleted_at: null
         });
@@ -83,7 +83,7 @@ const deleteMovie = async (movieId) => {
 module.exports = {
     createMovie,
     getAllMovies,
-    editMovie,
+    getMovie,
     updateMovie,
     deleteMovie
 }

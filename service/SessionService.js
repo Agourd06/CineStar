@@ -26,11 +26,11 @@ const getAdminSessions = async () => {
     }
 }
 
-const editSession = async (sessionId) => {
+const getSession = async (sessionId) => {
 
 
     try {
-        const session = await Session.find({
+        const session = await Session.findOne({
             _id: sessionId,
             deleted_at: null
         });
@@ -86,35 +86,54 @@ const deleteSession = async (sessionId) => {
 const getClientSessions = async () => {
     try {
         const sessions = await Session.find({
-            deleted_at: null
-        });
+                deleted_at: null
+            })
+            .populate('movie', 'name')
+            .populate('room', 'name');
+        const upcomingSessions = [];
 
-        const validSessions = [];
         const currentTime = moment();
 
         for (let session of sessions) {
             const sessionTime = moment(session.displayTime);
 
             if (currentTime.isBefore(sessionTime)) {
-                validSessions.push(session);
+                upcomingSessions.push(session);
             }
         }
 
-        return validSessions;
+        return upcomingSessions;
 
     } catch (error) {
         throw new Error('Error fetching Sessions: ' + error.message);
     }
 }
 
+const getSessionDetails = async (sessionId) => {
+    try {
+        const session = await Session.findOne({
+            _id: sessionId,
+            deleted_at: null
+        })
+        .populate('movie', 'name Media duration')
+        .populate('room', 'name');
 
- 
+        if (!session) {
+            throw new Error('Session not found');
+        }
 
+        const currentTime = moment();
+        const sessionTime = moment(session.displayTime);
 
+        if (currentTime.isBefore(sessionTime)) {
+            return session;
+        }
 
-
-
-
+        return "This session isn't disponible anymore"; 
+    } catch (error) {
+        throw new Error('Error fetching Session: ' + error.message);
+    }
+}
 
 
 
@@ -126,7 +145,9 @@ const getClientSessions = async () => {
 module.exports = {
     createSession,
     getAdminSessions,
-    editSession,
+    getSession,
     updateSession,
-    deleteSession
+    deleteSession,
+    getClientSessions,
+    getSessionDetails
 }
