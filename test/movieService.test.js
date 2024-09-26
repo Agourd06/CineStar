@@ -78,7 +78,39 @@ describe('MovieService', () => {
         });
     });
 
-  
+    describe('getMovie', () => {
+        it('should return the movie if found', async () => {
+            Movie.findOne.mockResolvedValue(mockMovie);
+
+            const result = await getMovie(mockMovieId);
+
+            expect(Movie.findOne).toHaveBeenCalledWith({
+                _id: mockMovieId,
+                deleted_at: null
+            });
+            expect(result).toEqual(mockMovie);
+        });
+
+        it('should return null if movie is not found', async () => {
+            Movie.findOne.mockResolvedValue(null);
+
+            const result = await getMovie(mockMovieId);
+
+            expect(Movie.findOne).toHaveBeenCalledWith({
+                _id: mockMovieId,
+                deleted_at: null
+            });
+            expect(result).toBeNull();
+        });
+
+        it('should throw an error if fetching the movie fails', async () => {
+            const errorMessage = 'Database error';
+            Movie.findOne.mockRejectedValue(new Error(errorMessage));
+
+            await expect(getMovie(mockMovieId)).rejects.toThrow('Error fetching Movie: ' + errorMessage);
+        });
+    });
+
 
 
 });
