@@ -74,11 +74,17 @@ const deleteMovie = async (movieId) => {
         }, {
             new: true
         });
-        return deletedMovie
+
+        if (!deletedMovie) {
+            throw new Error('Movie not found');
+        }
+
+        return deletedMovie;
     } catch (error) {
         throw new Error('Error deleting movie: ' + error.message);
     }
 }
+
 
 module.exports = {
     createMovie,

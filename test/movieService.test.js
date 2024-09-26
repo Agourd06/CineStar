@@ -112,5 +112,94 @@ describe('MovieService', () => {
     });
 
 
+    describe('updateMovie', () => {
+        it('should update and return the movie if found', async () => {
+            const movieUpdateData = {
+                name: 'Updated Movie'
+            };
+            Movie.findOneAndUpdate.mockResolvedValue({
+                ...mockMovie,
+                ...movieUpdateData
+            });
+
+            const result = await updateMovie(mockMovieId, movieUpdateData);
+
+            expect(Movie.findOneAndUpdate).toHaveBeenCalledWith({
+                    _id: mockMovieId
+                },
+                movieUpdateData, {
+                    new: true
+                }
+            );
+            expect(result).toEqual({
+                ...mockMovie,
+                ...movieUpdateData
+            });
+        });
+
+        it('should return null if movie is not found', async () => {
+            const movieUpdateData = {
+                name: 'Updated Movie'
+            };
+            Movie.findOneAndUpdate.mockResolvedValue(null);
+
+            const result = await updateMovie(mockMovieId, movieUpdateData);
+
+            expect(Movie.findOneAndUpdate).toHaveBeenCalledWith({
+                    _id: mockMovieId
+                },
+                movieUpdateData, {
+                    new: true
+                }
+            );
+            expect(result).toBeNull();
+        });
+
+        it('should throw an error if updating the movie fails', async () => {
+            const errorMessage = 'Database error';
+            Movie.findOneAndUpdate.mockRejectedValue(new Error(errorMessage));
+
+            await expect(updateMovie(mockMovieId, {
+                name: 'Updated Movie'
+            })).rejects.toThrow(
+                'Error updating movie: ' + errorMessage
+            );
+        });
+    });
+
+
+    describe('deleteMovie', () => {
+    it('should soft-delete and return the movie if found', async () => {
+        Movie.findOneAndUpdate.mockResolvedValue({
+            ...mockMovie,
+            deleted_at: new Date(),
+        });
+
+        const result = await deleteMovie(mockMovieId);
+
+        expect(Movie.findOneAndUpdate).toHaveBeenCalledWith(
+            { _id: mockMovieId },
+            { deleted_at: expect.any(Date) },
+            { new: true }
+        );
+        expect(result).toEqual({
+            ...mockMovie,
+            deleted_at: expect.any(Date),
+        });
+    });
+
+    it('should throw an error if movie is not found', async () => {
+        Movie.findOneAndUpdate.mockResolvedValue(null); 
+
+        await expect(deleteMovie(mockMovieId)).rejects.toThrow('Movie not found');
+    });
+
+    it('should throw an error if soft-deleting the movie fails', async () => {
+        const errorMessage = 'Database error';
+        Movie.findOneAndUpdate.mockRejectedValue(new Error(errorMessage)); 
+
+        await expect(deleteMovie(mockMovieId)).rejects.toThrow('Error deleting movie: ' + errorMessage);
+    });
+});
 
 });
