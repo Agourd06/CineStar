@@ -1,4 +1,4 @@
-const authService = require('../service/authService');
+const authService = require('../service/AuthService');
 
 const login = async (req, res) => {
   try {
@@ -6,7 +6,7 @@ const login = async (req, res) => {
       email,
       password,
     } = req.body;
-    
+
     const token = await authService.login(email, password);
 
     if (!token) {
@@ -51,7 +51,52 @@ const register = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const {
+      email
+    } = req.body;
+    const response = await authService.sendPasswordResetEmail(email);
+    res.json(response);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message
+    });
+  }
+};
+
+const resetPasswordHandler = async (req, res) => {
+  const {
+    token
+  } = req.params;
+  const {
+    password,
+    confirmPassword
+  } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(403).send("please check password Confirmation")
+  }
+  try {
+    const response = await authService.resetPassword(token, password);
+    res.json(response);
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(400).json({
+        message: 'Token has expired'
+      });
+    }
+    res.status(404).json({
+      message: error.message
+    });
+  }
+};
+
+
+
 module.exports = {
   login,
-  register
+  register,
+  forgotPassword,
+  resetPasswordHandler
 };

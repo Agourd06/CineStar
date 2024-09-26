@@ -13,7 +13,8 @@ function UserId(req) {
         }
 
         const decoded = jwt.verify(token, process.env.SECRET);
-        return decoded.userId;
+        
+        return decoded.UserInfo.userId;
     } catch (error) {
         throw new Error('Invalid token or Authorization header');
     }

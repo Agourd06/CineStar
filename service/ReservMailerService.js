@@ -5,8 +5,8 @@ const sendReservationEmail = async (userEmail, reservationDetails) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'oualidagourd@gmail.com',
-                pass: 'klnx ltdp fswn cffi'
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSWORD
             }
         });
 
@@ -19,6 +19,7 @@ const sendReservationEmail = async (userEmail, reservationDetails) => {
                 <h2 style="color: #333;">Your Reservation is Confirmed</h2>
                 <p>Dear Customer,</p>
                 <p>We are pleased to inform you that your reservation has been successfully created.</p>
+                <p>We we hope you enjoy your time in cineStar.</p>
 
                 <h3>Reservation Details</h3>
                 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">

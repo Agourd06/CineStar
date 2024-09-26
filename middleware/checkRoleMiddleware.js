@@ -13,10 +13,12 @@ const checkRole = (requiredRole) => {
       }
   
       try {
-        
+
         const decoded = jwt.verify(token, process.env.SECRET);
-  
-        if (decoded.role !== requiredRole) {
+
+ 
+        if (decoded.UserInfo.role !== requiredRole) {
+            
           return res.status(403).json({ message: 'Access denied. Your role permissions cant go through this action.' });
         }
   

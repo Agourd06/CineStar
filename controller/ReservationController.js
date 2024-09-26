@@ -1,6 +1,6 @@
 const reservationService = require("../service/ReservationService");
 const clientService = require("../service/ClientService");
-const mailerService = require("../service/MailerService");
+const mailerService = require("../service/ReservMailerService");
 const {
     UserId
 } = require('../helpers/helpers');
@@ -16,7 +16,6 @@ const createReservation = async (req, res) => {
         const client = await clientService.getClient(userId)
         // Checking if seat reserved already exist or not
         const alreadyTakenSeats = await reservationService.checkAvailableSeats(session, seat);
-        console.log(client[0].email);
 
         if (alreadyTakenSeats.length > 0) {
             return res.status(400).json({

@@ -18,7 +18,7 @@ router.put("/reservation/cancel/:id",reservationController.cancelReserv)
 
 
 // --------------------Client Page---------------------
-router.get("/:id",clientController.getClient)
+router.get("/",clientController.getClient)
 // --------------------Client Page---------------------
 
 
