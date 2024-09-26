@@ -9,7 +9,7 @@ function UserId(req) {
 
         const token = authHeader.split(' ')[1];
         if (!token) {
-            throw new Error('Token is missing from Authorization header');
+            throw new Error('Token is missing');
         }
 
         const decoded = jwt.verify(token, process.env.SECRET);
