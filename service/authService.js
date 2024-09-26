@@ -7,24 +7,24 @@ const User = require('../model/UserModel');
 
 const login = async (email, password) => {
   const user = await User.findOne({
-    email
+    email,
   });
   if (!user) {
     return null;
   }
 
   // Comparing passwords
-
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     return null;
   }
-//My secret Key
+  //My secret Key
   SecretKey = process.env.SECRET;
 
   //checking for user and store Token
   const token = jwt.sign({
-    userId: user._id
+    userId: user._id,
+    role: user.role
   }, SecretKey, {
     expiresIn: '1h',
   });

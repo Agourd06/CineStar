@@ -13,10 +13,10 @@ const createReservation = async (req, res) => {
             session
         } = req.body;
         let userId = UserId(req);
-       const client = await clientService.getClient(userId)
+        const client = await clientService.getClient(userId)
         // Checking if seat reserved already exist or not
         const alreadyTakenSeats = await reservationService.checkAvailableSeats(session, seat);
-console.log(client[0].email);
+        console.log(client[0].email);
 
         if (alreadyTakenSeats.length > 0) {
             return res.status(400).json({

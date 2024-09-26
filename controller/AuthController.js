@@ -4,8 +4,9 @@ const login = async (req, res) => {
   try {
     const {
       email,
-      password
+      password,
     } = req.body;
+    
     const token = await authService.login(email, password);
 
     if (!token) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const reservationController = require('../controller/ReservationController')
-const sessionController = require('../controller/SessionController')
+const clientController = require('../controller/ClientController')
 
 
 
@@ -17,7 +17,9 @@ router.put("/reservation/cancel/:id",reservationController.cancelReserv)
 // ----------------------------  CRUD reservation  --------------------------
 
 
-
+// --------------------Client Page---------------------
+router.get("/:id",clientController.getClient)
+// --------------------Client Page---------------------
 
 
 module.exports = router;
