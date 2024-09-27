@@ -1,11 +1,25 @@
 const authService = require('../service/AuthService');
-
+const {
+  loginSchema,
+  registerSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema
+} = require('../validations/AuthValidations')
 const login = async (req, res) => {
   try {
     const {
       email,
       password,
     } = req.body;
+
+    const {
+      error
+    } = loginSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message
+      });
+    }
 
     const token = await authService.login(email, password);
 
@@ -31,8 +45,17 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    req.body.role = 'client';
 
+    const {
+      error
+    } = registerSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message
+      });
+    }
+
+    req.body.role = 'client';
     const newUser = await authService.register(req.body);
     res.status(201).json({
       message: 'User created successfully',
@@ -57,6 +80,15 @@ const forgotPassword = async (req, res) => {
     const {
       email
     } = req.body;
+
+    const {
+      error
+    } = forgotPasswordSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message
+      });
+    }
     const response = await authService.sendPasswordResetEmail(email);
     res.json(response);
   } catch (error) {
@@ -67,18 +99,26 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPasswordHandler = async (req, res) => {
-  const {
-    token
-  } = req.params;
-  const {
-    password,
-    confirmPassword
-  } = req.body;
 
-  if (password !== confirmPassword) {
-    return res.status(403).send("please check password Confirmation")
-  }
+
+
   try {
+    const {
+      token
+    } = req.params;
+    const {
+      password,
+      confirmPassword
+    } = req.body;
+
+    const {
+      error
+    } = resetPasswordSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message
+      });
+    }
     const response = await authService.resetPassword(token, password);
     res.json(response);
   } catch (error) {

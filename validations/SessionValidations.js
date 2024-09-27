@@ -24,7 +24,6 @@ const updateSessionSchema = Joi.object({
     price: Joi.number().positive().optional().messages({
         'number.positive': 'Price must be a positive number',
     }),
-
 });
 
 module.exports = {
