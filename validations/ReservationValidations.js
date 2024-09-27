@@ -16,6 +16,8 @@ const createReservationSchema = Joi.object({
         'number.positive': 'Session must be a positive integer'
     })
 });
+
+
 const updateReservationSchema = Joi.object({
     seat: Joi.array().items(Joi.number().integer().positive()).optional().messages({
         'array.base': 'Seats must be an array of numbers',

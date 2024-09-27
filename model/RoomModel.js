@@ -11,7 +11,7 @@ const roomSchema = mongoose.Schema({
     capacity : {
         type : Number,
         required : [true , "Romm capacity is required"],
-        minlength : [6 , "Room capacity can't be below 6 seats"]
+        min : [6 , "Room capacity can't be below 6 seats"]
     },
     row_seats:{
         type:Number,

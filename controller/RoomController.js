@@ -1,12 +1,25 @@
 const roomService = require('../service/RoomService');
-
-const createroom = async(req , res) => {
+const {
+    createRoomSchema,
+    updateRoomSchema
+} = require('../validations/RoomValidations')
+const createroom = async (req, res) => {
 
     try {
+
+
+        const {
+            error
+        } = createRoomSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            })
+        }
         const room = await roomService.createroom(req.body)
         return res.status(201).json({
             message: "room created successfully",
-            data : room
+            data: room
         })
     } catch (error) {
         console.error(error);
@@ -69,6 +82,15 @@ const updateRoom = async (req, res) => {
         const {
             id
         } = req.params
+
+        const {
+            error
+        } = updateRoomSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            })
+        }
         const updatedRoom = await roomService.updateRoom(id, req.body);
         if (!updatedRoom) {
             return res.status(404).send("room not found")
