@@ -10,14 +10,14 @@ const MovieSchema = mongoose.Schema(
             unique: true,
             required: [true, "Name field is obligatory"]
         },
-        Media: {
+        media: {
             type: String,
             required: [true, "Movie Image is obligatory"]
         },
         duration: {
             type: Number,
             required: [true, "Duration field is obligatory"],
-            min: [60, "Duration must be at least 60 minute"]
+            min: [30, "Duration must be at least 60 minute"]
         },
         deleted_at: {
             type: Date,

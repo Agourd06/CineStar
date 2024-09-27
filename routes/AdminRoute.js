@@ -4,6 +4,9 @@ const AdminController = require('../controller/AdminController');
 const MovieController = require('../controller/MovieController');
 const RoomController = require('../controller/RoomController');
 const SessionController = require('../controller/SessionController');
+const upload = require('../middleware/uploadMiddleWare')
+
+
 
 //------------------------ Admins CRUD------------------------
 router.post("/create",AdminController.createAdmin)
@@ -17,7 +20,7 @@ router.put("/delete/:id",AdminController.softDeleteAdmins)
 
 
 //------------------------ Movie CRUD------------------------
-router.post("/movie/create",MovieController.createMovie)
+router.post("/movie/create",upload.single('media'),MovieController.createMovie)
 router.get("/movies",MovieController.getAllMovies)
 router.get("/movie/:id",MovieController.getMovie)
 router.put("/movie/update/:id",MovieController.updateMovie)

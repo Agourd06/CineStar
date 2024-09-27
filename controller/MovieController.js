@@ -1,9 +1,13 @@
 const movieService = require('../service/MovieService')
 
-
+const {
+    createMovieSchema
+} = require('../validations/MovieValidations')
 
 const createMovie = async (req, res) => {
     try {
+      
+
         const movie = await movieService.createMovie(req.body);
         res.status(201).json({
             massage: "movie created successfully",
@@ -66,6 +70,7 @@ const updateMovie = async (req, res) => {
         const {
             id
         } = req.params
+
         const updatedMovie = await movieService.updateMovie(id, req.body);
         if (!updatedMovie) {
             return res.status(404).send("Movie not found")

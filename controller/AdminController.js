@@ -1,7 +1,20 @@
 const AdminService = require('../service/AdminService');
-
+const {
+    createAdminSchema,
+    updateAdminSchema
+} = require('../validations/AdminValidations.js')
 const createAdmin = async (req, res) => {
     try {
+
+        const {
+            error
+        } = createAdminSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            });
+        }
+        req.body.role = 'admin';
 
         const NewAdmin = await AdminService.createAdmin(req.body);
 
@@ -66,6 +79,14 @@ const updateAdmins = async (req, res) => {
         const {
             id
         } = req.params;
+        const {
+            error
+        } = updateAdminSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            });
+        }
         const updatedAdmin = await AdminService.updateAdmins(id, req.body);
 
         if (!updatedAdmin) {

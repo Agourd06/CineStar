@@ -31,6 +31,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
+    req.body.role = 'client';
 
     const newUser = await authService.register(req.body);
     res.status(201).json({
