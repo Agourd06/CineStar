@@ -1,14 +1,33 @@
 const movieService = require('../service/MovieService')
 
 const {
-    createMovieSchema
+    createMovieSchema,
+    updateMovieSchema
 } = require('../validations/MovieValidations')
 
 const createMovie = async (req, res) => {
     try {
-      
+        const {
+            error
+        } = createMovieSchema.validate(req.body)
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            })
+        }
 
-        const movie = await movieService.createMovie(req.body);
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'Movie Image is obligatory'
+            });
+        }
+
+        const movieData = {
+            ...req.body,
+            media: req.file.path
+        };
+
+        const movie = await movieService.createMovie(movieData);
         res.status(201).json({
             massage: "movie created successfully",
             movie: movie
@@ -71,6 +90,14 @@ const updateMovie = async (req, res) => {
             id
         } = req.params
 
+        const {
+            error
+        } = updateMovieSchema.validate(req.body)
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            })
+        }
         const updatedMovie = await movieService.updateMovie(id, req.body);
         if (!updatedMovie) {
             return res.status(404).send("Movie not found")
