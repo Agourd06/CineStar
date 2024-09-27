@@ -1,9 +1,16 @@
 const sessionService = require('../service/SessionService')
-const moment = require('moment');
-
+const { createSessionSchema ,
+    updateSessionSchema} = require('../validations/SessionValidations')
 
 const createSession = async (req, res) => {
     try {
+
+        const { error } = createSessionSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            });
+        }
         const newSession = await sessionService.createSession(req.body)
 
         res.status(201).json({
@@ -66,6 +73,13 @@ const updateSession = async (req, res) => {
         const {
             id
         } = req.params
+
+        const { error } = updateSessionSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: error.details[0].message
+            });
+        }
         const updatedSession = await sessionService.updateSession(id, req.body);
         if (!updatedSession) {
             return res.status(404).send("session not found")
