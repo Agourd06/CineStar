@@ -31,8 +31,7 @@ const login = async (email, password) => {
   }, SecretKey, {
     expiresIn: '1h'
   });
-  console.log(token);
-  
+
 
   return token;
 };
@@ -41,48 +40,48 @@ const login = async (email, password) => {
 
 
 
-    const register = async (userData) => {
+const register = async (userData) => {
 
-      const user = new User(userData);
+  const user = new User(userData);
 
-      return await user.save();
-    };
+  return await user.save();
+};
 
 
-    const sendPasswordResetEmail = async (email) => {
-      const user = await User.findOne({
-        email
-      });
-      if (!user) {
-        throw new Error('User not found');
-      }
+const sendPasswordResetEmail = async (email) => {
+  const user = await User.findOne({
+    email
+  });
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-      const UserInfo = {
-        role: user.role,
-        userId: user._id
-      }
+  const UserInfo = {
+    role: user.role,
+    userId: user._id
+  }
 
-      const resetToken = jwt.sign({
-        UserInfo: UserInfo
-      }, process.env.SECRET, {
-        expiresIn: '1h'
-      });
+  const resetToken = jwt.sign({
+    UserInfo: UserInfo
+  }, process.env.SECRET, {
+    expiresIn: '1h'
+  });
 
-      // Send email with reset link
-      const transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.EMAIL_PASSWORD
-        }
-      });
+  // Send email with reset link
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
 
-      const resetURL = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
-      const mailOptions = {
-        to: user.email,
-        from: process.env.EMAIL,
-        subject: 'Password Reset',
-        html: `
+  const resetURL = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
+  const mailOptions = {
+    to: user.email,
+    from: process.env.EMAIL,
+    subject: 'Password Reset',
+    html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
                 <h1 style="color: #333;">CineStar</h1>
                 <h2 style="color: #333;">Password Reset Request</h2>
@@ -112,31 +111,31 @@ const login = async (email, password) => {
                 </footer>
             </div>
         `
-    };
-    
-      await transporter.sendMail(mailOptions);
-      return {
-        message: 'Password reset email sent'
-      };
-    };
+  };
 
-    const resetPassword = async (token, newPassword) => {
-      // Verify the JWT token
-      const decoded = jwt.verify(token, process.env.SECRET);
-      const user = await User.findById(decoded.UserInfo.userId);
-      if (!user) {
-        throw new Error('User not found');
-      }
+  await transporter.sendMail(mailOptions);
+  return {
+    message: 'Password reset email sent'
+  };
+};
 
-      // Hash the new password
+const resetPassword = async (token, newPassword) => {
+  // Verify the JWT token
+  const decoded = jwt.verify(token, process.env.SECRET);
+  const user = await User.findById(decoded.UserInfo.userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-      // Update user's password
-      user.password = newPassword;
-      await user.save();
-      return {
-        message: 'Password has been reset'
-      };
-    };
+  // Hash the new password
+
+  // Update user's password
+  user.password = newPassword;
+  await user.save();
+  return {
+    message: 'Password has been reset'
+  };
+};
 
 module.exports = {
   login,

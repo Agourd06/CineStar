@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const reservationController = require('../controller/ReservationController')
 const clientController = require('../controller/ClientController')
+const roomController = require('../controller/RoomController')
 
 
 
@@ -20,6 +21,10 @@ router.put("/reservation/cancel/:id",reservationController.cancelReserv)
 // --------------------Client Page---------------------
 router.get("/",clientController.getClient)
 // --------------------Client Page---------------------
+
+// --------------------Room Page---------------------
+router.get("/room/:id",roomController.getRoom)
+// --------------------Room Page---------------------
 
 
 module.exports = router;

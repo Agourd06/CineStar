@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const createSessionSchema = Joi.object({
-    date: Joi.date().required().messages({
+    displayTime: Joi.date().required().messages({
         'date.base': 'Invalid date format',
         'any.required': 'Session date is required',
     }),
@@ -10,11 +10,11 @@ const createSessionSchema = Joi.object({
         'number.positive': 'Price must be a positive number',
         'any.required': 'Price is required'
     }),
-    movieId: Joi.string().required().messages({
+    movie: Joi.string().required().messages({
         'string.empty': 'Movie ID is required',
         'any.required': 'Movie ID is required'
     }),
-    roomId: Joi.string().required().messages({
+    room: Joi.string().required().messages({
         'string.empty': 'Room ID is required',
         'any.required': 'Room ID is required'
     })

@@ -8,10 +8,16 @@ require('dotenv').config();
 const dbConnect = require('./config/dataBase')
 const verifyToken = require('./middleware/authMiddleware.js');
 const checkRole = require('./middleware/checkRoleMiddleware.js');
-
+const cors = require('cors');
+const path = require('path')
 
 dbConnect();
-
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST','PUT'],
+  credentials: true, 
+}));
+app.use(express.static(path.join(__dirname, 'uploads')))
 app.use(express.json());
 app.use('/api/admin', verifyToken, checkRole('admin'), adminRoute);
 app.use('/api/auth', authRoute);

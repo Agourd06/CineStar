@@ -9,10 +9,8 @@ const createReservationSchema = Joi.object({
         'number.integer': 'Each seat must be a whole number',
         'number.positive': 'Each seat number must be a positive integer'
     }),
-    session: Joi.number().integer().positive().required().messages({
-        'number.base': 'Session must be a valid number',
+    session: Joi.string().optional().messages({
         'number.empty': 'Session is required',
-        'number.integer': 'Session must be a whole number',
         'number.positive': 'Session must be a positive integer'
     })
 });
@@ -26,10 +24,8 @@ const updateReservationSchema = Joi.object({
         'number.integer': 'Each seat must be a whole number',
         'number.positive': 'Each seat number must be a positive integer'
     }),
-    session: Joi.number().integer().positive().optional().messages({
-        'number.base': 'Session must be a valid number',
+    session: Joi.string().optional().messages({
         'number.empty': 'Session is required',
-        'number.integer': 'Session must be a whole number',
         'number.positive': 'Session must be a positive integer'
     })
 });

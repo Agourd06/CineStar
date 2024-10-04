@@ -25,21 +25,16 @@ describe('getClient', () => {
   });
 
   it('should throw an error if an error occurs during fetching', async () => {
-    // Arrange
     User.findOne.mockRejectedValue(new Error('Database error'));
 
-    // Act & Assert
     await expect(getClient(mockClientId)).rejects.toThrow('Error fetching Client: Database error');
   });
 
   it('should return null if client not found', async () => {
-    // Arrange
     User.findOne.mockResolvedValue(null); 
 
-    // Act
     const client = await getClient(mockClientId);
 
-    // Assert
     expect(client).toBeNull();
   });
 });

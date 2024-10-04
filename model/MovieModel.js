@@ -10,6 +10,14 @@ const MovieSchema = mongoose.Schema(
             unique: true,
             required: [true, "Name field is obligatory"]
         },
+        autor: {
+            type: String,
+            required: [true, "autor field is obligatory"]
+        },
+        trailer: {
+            type: String,
+            required: [true, "autor field is obligatory"]
+        },
         media: {
             type: String,
             required: [true, "Movie Image is obligatory"]
@@ -18,6 +26,11 @@ const MovieSchema = mongoose.Schema(
             type: Number,
             required: [true, "Duration field is obligatory"],
             min: [30, "Duration must be at least 60 minute"]
+        },
+        description: {
+            type: String,
+            required: [true, "Description field is obligatory"]
+        
         },
         deleted_at: {
             type: Date,

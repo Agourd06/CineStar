@@ -42,6 +42,24 @@ const reservSession = async (sessionId) => {
     }
 }
 
+const getReservedSeats = async (id) => {
+    try {
+        const reservations = await Reservation.find({
+            session: id, 
+            deleted_at: null 
+        });
+
+        const reservedSeats = reservations.reduce((seat, reservation) => {
+            return seat.concat(reservation.seat); 
+        }, []);
+
+  
+        
+        return reservedSeats; 
+    } catch (error) {
+        throw new Error('Error fetching reserved seats: ' + error.message);
+    }
+};
 
 
 const clientReservations = async (clientId) => {
@@ -127,5 +145,6 @@ module.exports = {
     clientReservations,
     getReservation,
     updateReserv,
-    cancelReserv
+    cancelReserv,
+    getReservedSeats
 }

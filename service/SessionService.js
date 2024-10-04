@@ -39,6 +39,19 @@ const getSession = async (sessionId) => {
         throw new Error('Error fetching Session: ' + error.message);
     }
 }
+const getSessionOfRoom = async (roomId) => {
+
+
+    try {
+        const session = await Session.findOne({
+            room: roomId,
+            deleted_at: null
+        });
+        return session;
+    } catch (error) {
+        throw new Error('Error fetching Session: ' + error.message);
+    }
+}
 
 
 
@@ -88,19 +101,49 @@ const getClientSessions = async () => {
         const sessions = await Session.find({
                 deleted_at: null
             })
-            .populate('movie', 'name')
+            .populate('movie', 'name media duration description')
             .populate('room', 'name');
+
+        const upcomingSessions = [];
+        const uniqueMovieIds = new Set();
+        const currentTime = moment();
+
+        for (let session of sessions) {
+            const sessionTime = moment(session.displayTime);
+           
+            if (currentTime.isBefore(sessionTime) && !uniqueMovieIds.has(session.movie._id)) {
+                upcomingSessions.push(session);
+                uniqueMovieIds.add(session.movie._id); 
+            }
+        }
+
+        return upcomingSessions;
+
+    } catch (error) {
+        throw new Error('Error fetching Sessions: ' + error.message);
+    }
+}
+const getMovieSessions = async (id) => {
+    try {
+        const sessions = await Session.find({
+                deleted_at: null,
+                movie:id
+
+            })
+            .populate('movie', 'name media duration description')
+            .populate('room', 'name');
+            
         const upcomingSessions = [];
 
         const currentTime = moment();
 
         for (let session of sessions) {
             const sessionTime = moment(session.displayTime);
-
             if (currentTime.isBefore(sessionTime)) {
                 upcomingSessions.push(session);
             }
         }
+        
 
         return upcomingSessions;
 
@@ -115,7 +158,7 @@ const getSessionDetails = async (sessionId) => {
             _id: sessionId,
             deleted_at: null
         })
-        .populate('movie', 'name Media duration')
+        .populate('movie', 'name media duration description')
         .populate('room', 'name');
 
         if (!session) {
@@ -149,5 +192,7 @@ module.exports = {
     updateSession,
     deleteSession,
     getClientSessions,
-    getSessionDetails
+    getSessionDetails,
+    getMovieSessions,
+    getSessionOfRoom
 }

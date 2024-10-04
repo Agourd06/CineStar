@@ -1,4 +1,6 @@
 const roomService = require('../service/RoomService');
+const reservationService = require('../service/ReservationService');
+const sessionService = require('../service/SessionService');
 const {
     createRoomSchema,
     updateRoomSchema
@@ -61,11 +63,14 @@ const getRoom = async (req, res) => {
         const {
             id
         } = req.params
-        const Room = await roomService.getRoom(id);
+        const sessionsId = await sessionService.getSessionOfRoom(id)
+        const reservedSeats = await reservationService.getReservedSeats(sessionsId);
+
+        const room = await roomService.getRoom(id);
 
         res.status(200).json({
-            success: true,
-            data: Room
+            data: room,
+            reservedSeats: reservedSeats
         });
     } catch (error) {
         res.status(500).json({

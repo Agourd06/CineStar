@@ -15,6 +15,7 @@ const createReservation = async (req, res) => {
             seat,
             session
         } = req.body;
+        
         let userId = UserId(req);
 
         const {
@@ -28,7 +29,7 @@ const createReservation = async (req, res) => {
 
         // Checking if seat reserved already exist or not
         const alreadyTakenSeats = await reservationService.checkAvailableSeats(session, seat);
-
+        
         if (alreadyTakenSeats.length > 0) {
             return res.status(400).json({
                 message: "there is Some taken seat chosed please check again for avaibility",
@@ -63,6 +64,7 @@ const createReservation = async (req, res) => {
         });
     }
 };
+
 
 
 
@@ -189,4 +191,5 @@ module.exports = {
     getReservation,
     updateReserv,
     cancelReserv
+    
 }

@@ -154,6 +154,21 @@ const getSessionDetails = async (req, res) => {
     }
 }
 
+const getMovieSessions = async (req, res) => {
+    const {
+        id
+    } = req.params
+    try {
+        const upcomingSessions = await sessionService.getMovieSessions(id); 
+        return res.status(200).json(upcomingSessions); 
+    } catch (error) {
+        console.error(error.message); 
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
 
 
 module.exports = {
@@ -163,5 +178,6 @@ module.exports = {
     updateSession,
     deleteSession,
     getUpcomingSessions,
-    getSessionDetails
+    getSessionDetails,
+    getMovieSessions
 }
