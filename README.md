@@ -30,7 +30,7 @@ Cette application permet de gérer les films, les réservations, les salles, les
 - **Authentification**: JWT (JSON Web Token) pour sécuriser les sessions.
 
 ## Installation
-1. Clonez le dépôt : `git clone <(https://github.com/sanaahamliri/Cin-Manager.git)>`
+1. Clonez le dépôt : `git clone <(https://github.com/Agourd06/CineStar.git)>`
 2. Installez les dépendances : `npm install`
 3. Configurez votre environnement.
 4. Démarrez l'application : `npm start`
@@ -39,7 +39,7 @@ Cette application permet de gérer les films, les réservations, les salles, les
 Pour contribuer, soumettez une demande de tirage (pull request) après avoir discuté de vos modifications.
 
 ## Auteurs
-- [Hamliri Sanaa](sanahamlirifr01@gmail.com)
+- [Agourd oualid](oualidagourd@gmail.com)
 
 ## Licence
 Sous licence MIT.
