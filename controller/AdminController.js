@@ -3,7 +3,10 @@ const {
     createAdminSchema,
     updateAdminSchema
 } = require('../validations/AdminValidations.js')
-const createAdmin = async (req, res) => {
+const {
+    UserId
+} = require('../helpers/helpers');
+const createUser = async (req, res) => {
     try {
 
         const {
@@ -14,21 +17,15 @@ const createAdmin = async (req, res) => {
                 message: error.details[0].message
             });
         }
-        req.body.role = 'admin';
 
-        const NewAdmin = await AdminService.createAdmin(req.body);
+        const newUser = await AdminService.createUser(req.body);
 
         res.status(201).json({
-            message: "Admin created succesfully",
-            user: NewAdmin
+            message: "User created succesfully",
+            user: newUser
         })
     } catch (error) {
         console.error(error);
-        if (error.code === 11000) {
-            return res.status(400).json({
-                message: 'Email already exists'
-            });
-        }
         res.status(500).json({
             message: 'Failed to create user',
             error: error.message
@@ -38,13 +35,15 @@ const createAdmin = async (req, res) => {
 }
 
 
-const getAdmins = async (req, res) => {
+const getUsersController = async (req, res) => {
     try {
-        const admins = await AdminService.getAdmins();
+        const { page = 1, limit = 5 } = req.query;
+        const adminId = UserId(req); 
+        const users = await AdminService.getUsers(adminId, Number(page), Number(limit));
 
         res.status(200).json({
             success: true,
-            data: admins
+            data: users
         });
     } catch (error) {
         res.status(500).json({
@@ -54,17 +53,17 @@ const getAdmins = async (req, res) => {
     }
 };
 
-const getAdmin = async (req, res) => {
+
+const getUser = async (req, res) => {
     try {
 
-        const {
-            id
-        } = req.params
-        const admin = await AdminService.getAdmin(id);
+        const userId = UserId(req)
+
+        const user = await AdminService.getUser(userId);
 
         res.status(200).json({
             success: true,
-            data: admin
+            data: user
         });
     } catch (error) {
         res.status(500).json({
@@ -74,7 +73,7 @@ const getAdmin = async (req, res) => {
     }
 }
 
-const updateAdmins = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const {
             id
@@ -101,39 +100,35 @@ const updateAdmins = async (req, res) => {
         });
     } catch (error) {
         console.error("Error updating admin:", error);
-        if (error.code === 11000) {
-            return res.status(400).json({
-                message: 'Email already exists'
-            });
-        }
+        
         res.status(500).json({
             message: "Failed to update admin",
             error: error.message
         });
     }
 };
-const softDeleteAdmins = async (req, res) => {
+const archiveUser = async (req, res) => {
     try {
         const {
             id
         } = req.params;
-        const updatedAdmin = await AdminService.softDeleteAdmins(id);
+        const archivedUser = await AdminService.archiveUser(id);
 
-        if (!updatedAdmin) {
+        if (!archivedUser) {
             return res.status(404).json({
-                message: "Admin not found"
+                message: "User not found"
             });
         }
 
         res.status(200).json({
-            message: "Admin Deleted successfully",
-            user: updatedAdmin
+            message: "User Archived successfully",
+            user: archivedUser
         });
     } catch (error) {
-        console.error("Error deleting admin:", error);
+        console.error("Error deleting user:", error);
 
         res.status(500).json({
-            message: "Failed to delete admin",
+            message: "Failed to delete user",
             error: error.message
         });
     }
@@ -142,9 +137,9 @@ const softDeleteAdmins = async (req, res) => {
 
 
 module.exports = {
-    createAdmin,
-    getAdmins,
-    getAdmin,
-    updateAdmins,
-    softDeleteAdmins
+    createUser,
+    getUsersController,
+    getUser,
+    updateUser,
+    archiveUser
 };

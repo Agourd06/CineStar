@@ -12,6 +12,9 @@ const createAdminSchema = Joi.object({
     password: Joi.string().min(6).required().messages({
         'string.min': 'Password must be at least 6 characters long',
         'string.empty': 'Password is required'
+    }),
+    role: Joi.string().required().valid('client' , 'admin').messages({
+        'string.empty': 'Role is required'
     })
 });
 
@@ -25,6 +28,9 @@ const updateAdminSchema = Joi.object({
     }),
     password: Joi.string().min(6).optional().messages({
         'string.min': 'Password must be at least 6 characters long',
+    }),
+    role: Joi.string().optional().valid('client' , 'admin').messages({
+        'string.empty': 'Role is required'
     })
 });
 

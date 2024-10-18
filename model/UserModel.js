@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema(
             enum: ['admin', 'client'],
             required: [true, "role field is obligatory"],
         },
+        subscribed : {
+            type: Boolean,
+            default: false
+        },
         deleted_at: {
             type: Date, 
             default: null,

@@ -1,31 +1,24 @@
 const multer = require('multer');
-const path = require('path');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/images'); 
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
-    const mimeType = allowedTypes.test(file.mimetype);
-    const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-
-    if (mimeType && extName) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Only images (jpeg, jpg, png, gif) are allowed'));
-    }
-};
+const storage = multer.memoryStorage();
 
 const upload = multer({
-    storage: storage.filename,
-    fileFilter: fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } 
-});
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (file.fieldname === 'image') {
+            if (!file.mimetype.startsWith('image/')) {
+                return cb(new Error('Only image files are allowed for the image field'), false);
+            }
+        } else if (file.fieldname === 'video') {
+            if (!file.mimetype.startsWith('video/')) {
+                return cb(new Error('Only video files are allowed for the video field'), false);
+            }
+        }
+        cb(null, true);
+    }
+}).fields([
+    { name: 'image', maxCount: 1 }, 
+    { name: 'video', maxCount: 1 }
+]);
 
 module.exports = upload;

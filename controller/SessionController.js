@@ -1,4 +1,7 @@
 const sessionService = require('../service/SessionService')
+const reservationService = require('../service/ReservationService')
+const movieService = require('../service/MovieService')
+const roomService = require('../service/RoomService')
 const { createSessionSchema ,
     updateSessionSchema} = require('../validations/SessionValidations')
 
@@ -31,12 +34,19 @@ const createSession = async (req, res) => {
 
 const getAdminSessions = async (req, res) => {
     try {
-        const sessions = await sessionService.getAdminSessions()
+        console.log("yooo");
+        const { page = 1, limit = 5 } = req.query;
+        
+        const sessions = await sessionService.getAdminSessions(Number(page), Number(limit))
+        const movies = await movieService.getMovies()
+        const rooms = await roomService.getRooms()
 
-
+        
         res.status(200).json({
             success: true,
-            data: sessions
+            sessions: sessions,
+            movies: movies,
+            rooms: rooms
         });
     } catch (error) {
         res.status(500).json({
@@ -50,15 +60,17 @@ const getAdminSessions = async (req, res) => {
 
 const getSession = async (req, res) => {
     try {
-
         const {
             id
         } = req.params
+        const reservedSeats = await reservationService.getReservedSeats(id);
+
         const Session = await sessionService.getSession(id);
 
         res.status(200).json({
             success: true,
-            data: Session
+            data: Session,
+            reservedSeats : reservedSeats
         });
     } catch (error) {
         res.status(500).json({
@@ -122,6 +134,24 @@ const deleteSession = async (req, res) => {
 
 
 // --------------client Session--------------------
+
+const searchSessions = async (req, res) => {
+    try {
+        const movieName = req.query.movieName;  
+        
+        const upcomingSessions = await sessionService.searchSessions(movieName); 
+        console.log(upcomingSessions);
+        
+        return res.status(200).json(upcomingSessions); 
+    } catch (error) {
+        console.error(error.message); 
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+
 const getUpcomingSessions = async (req, res) => {
     try {
         const upcomingSessions = await sessionService.getClientSessions(); 
@@ -179,5 +209,6 @@ module.exports = {
     deleteSession,
     getUpcomingSessions,
     getSessionDetails,
-    getMovieSessions
+    getMovieSessions,
+    searchSessions
 }

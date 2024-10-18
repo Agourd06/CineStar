@@ -7,49 +7,43 @@ const {
 
 const createMovie = async (req, res) => {
     try {
-        const {
-            error
-        } = createMovieSchema.validate(req.body)
+        
+       
+        
+        const { error } = createMovieSchema.validate(req.body);
         if (error) {
             return res.status(400).json({
                 message: error.details[0].message
-            })
-        }
-
-        if (!req.file) {
-            return res.status(400).json({
-                message: 'Movie Image is obligatory'
             });
         }
+ 
+        if (!req.files || !req.files.image || !req.files.video) {
+            return res.status(400).json({
+                message: 'Movie media and video are required'
+            });
+        }
+      
 
-        const movieData = {
-            ...req.body,
-            media: req.file.path
-        };
+        const movie = await movieService.createMovie(req.body, req.files);
 
-        const movie = await movieService.createMovie(movieData);
-        res.status(201).json({
-            massage: "movie created successfully",
+        return res.status(201).json({
+            message: "Movie created successfully",
             movie: movie
-        })
-
+        });
     } catch (error) {
         console.error(error);
-        if (error.code === 11000) {
-            return res.status(400).json({
-                message: 'Movie already exists'
-            });
-        }
-        res.status(500).json({
+        return res.status(500).json({
             message: 'Failed to create movie',
             error: error.message
         });
-
     }
-}
+};
+
 const getAllMovies = async (req, res) => {
     try {
-        const movies = await movieService.getAllMovies()
+        const { page = 1, limit = 5 } = req.query;
+
+        const movies = await movieService.getAllMovies(Number(page), Number(limit))
 
         res.status(200).json({
             success: true,
@@ -66,10 +60,7 @@ const getAllMovies = async (req, res) => {
 
 const getMovie = async (req, res) => {
     try {
-
-        const {
-            id
-        } = req.params
+        const { id } = req.params;
         const movie = await movieService.getMovie(id);
 
         res.status(200).json({
@@ -108,11 +99,7 @@ const updateMovie = async (req, res) => {
         })
     } catch (error) {
         console.error("error updating movie", error)
-        if (error.code = 11000) {
-            return res.status(400).json({
-                message: "Movie name already exists"
-            })
-        }
+      
         res.status(500).json({
             message: "Failed to update movie",
             error: error.message

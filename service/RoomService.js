@@ -19,11 +19,31 @@ const createroom = async (RoomData) => {
 
 
 
-const getAllRooms = async () => {
+const getAllRooms = async (page = 1, limit = 5) => {
     try {
+        const skip = (page - 1) * limit;
+
         const rooms = await Room.find({
-            deleted_at: null
-        });
+                deleted_at: null
+            })
+            .skip(skip)
+            .sort({
+                createdAt: -1
+            })
+            .limit(limit);
+
+        return rooms;
+    } catch (error) {
+        throw new Error('Error fetching rooms: ' + error.message);
+    }
+}
+
+const getRooms = async () => {
+    try {
+
+        const rooms = await Room.find({
+                deleted_at: null
+            })
 
         return rooms;
     } catch (error) {
@@ -87,5 +107,6 @@ module.exports = {
     getAllRooms,
     getRoom,
     updateRoom,
-    deleteRoom
+    deleteRoom,
+    getRooms
 }

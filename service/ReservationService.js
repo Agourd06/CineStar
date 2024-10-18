@@ -7,8 +7,8 @@ const createReservation = async (reservationData) => {
     try {
         //create Reservation
         const reservation = new Reservation(reservationData);
-      return await reservation.save();
-       
+        return await reservation.save();
+
     } catch (error) {
         throw new Error('Error saving reservation: ' + error.message);
     }
@@ -17,7 +17,8 @@ const createReservation = async (reservationData) => {
 
 const checkAvailableSeats = async (sessionId, requestedSeats) => {
     const existingReservations = await Reservation.find({
-        session: sessionId
+        session: sessionId,
+        status: 'normal'
     });
 
     const reservedSeats = existingReservations.flatMap(reservation => reservation.seat);
@@ -30,6 +31,7 @@ const checkAvailableSeats = async (sessionId, requestedSeats) => {
 
 const reservSession = async (sessionId) => {
     try {
+
         const sessionData = await Session.findById(sessionId);
 
         if (!sessionData) {
@@ -45,17 +47,17 @@ const reservSession = async (sessionId) => {
 const getReservedSeats = async (id) => {
     try {
         const reservations = await Reservation.find({
-            session: id, 
-            deleted_at: null 
+            session: id,
+            status: 'normal'
         });
 
         const reservedSeats = reservations.reduce((seat, reservation) => {
-            return seat.concat(reservation.seat); 
+            return seat.concat(reservation.seat);
         }, []);
 
-  
-        
-        return reservedSeats; 
+
+
+        return reservedSeats;
     } catch (error) {
         throw new Error('Error fetching reserved seats: ' + error.message);
     }
@@ -66,6 +68,19 @@ const clientReservations = async (clientId) => {
     try {
         const reservations = await Reservation.find({
             client: clientId,
+        }).sort({
+            createdAt: -1
+        }).populate({
+            path: 'session',
+            populate: [{
+                    path: 'room',
+                    select: 'name'
+                },
+                {
+                    path: 'movie',
+                    select: 'name image'
+                }
+            ]
         });
 
         return reservations
@@ -75,28 +90,29 @@ const clientReservations = async (clientId) => {
 
     }
 }
+
+
 const getReservation = async (reservId) => {
 
 
     try {
         const reservation = await Reservation.findOne({
-            _id: reservId,
-            deleted_at: null
-        })
-        .populate({
-            path: 'session',
-            populate: [
-                {
-                    path: 'room',
-                    select: 'name room_type' 
-                },
-                {
-                    path: 'movie', 
-                    select: 'name'
-                }
-            ]
-        });
-        
+                _id: reservId,
+                status: 'normal'
+            })
+            .populate({
+                path: 'session',
+                populate: [{
+                        path: 'room',
+                        select: 'name room_type'
+                    },
+                    {
+                        path: 'movie',
+                        select: 'name'
+                    }
+                ]
+            });
+
         return reservation;
     } catch (error) {
         throw new Error('Error fetching reservation: ' + error.message);
@@ -125,7 +141,7 @@ const cancelReserv = async (reservId) => {
         const cancledReserv = Reservation.findOneAndUpdate({
             _id: reservId
         }, {
-            deleted_at: new Date()
+            status: 'canceled'
         }, {
             new: true
         });
@@ -146,5 +162,5 @@ module.exports = {
     getReservation,
     updateReserv,
     cancelReserv,
-    getReservedSeats
+    getReservedSeats,
 }

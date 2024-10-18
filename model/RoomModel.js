@@ -13,13 +13,9 @@ const roomSchema = mongoose.Schema({
         required : [true , "Romm capacity is required"],
         min : [6 , "Room capacity can't be below 6 seats"]
     },
-    row_seats:{
-        type:Number,
-        required:[true,"Seats per each row is obligatory"]
-    },
     room_type : {
         type: String,
-        enum: ['VIP', 'Normal'], 
+        enum: ['VIP', 'Classic'], 
         required: [true, "can you add a room type"]
     },
     deleted_at: {

@@ -1,3 +1,4 @@
+const MovieModel = require('../model/MovieModel.js');
 const Session = require('../model/SessionModel.js');
 const moment = require('moment');
 
@@ -14,11 +15,19 @@ const createSession = async (sessionData) => {
 }
 
 
-const getAdminSessions = async () => {
+const getAdminSessions = async (page = 1, limit = 5) => {
     try {
+        const skip = (page - 1) * limit;
         const sessions = await Session.find({
-            deleted_at: null
-        });
+                deleted_at: null
+            })
+            .populate('movie', 'name image')
+            .populate('room', 'name')
+            .skip(skip)
+            .sort({
+                createdAt: -1
+            })
+            .limit(limit);
 
         return sessions;
     } catch (error) {
@@ -33,7 +42,7 @@ const getSession = async (sessionId) => {
         const session = await Session.findOne({
             _id: sessionId,
             deleted_at: null
-        });
+        }).populate('room', 'capacity');;
         return session;
     } catch (error) {
         throw new Error('Error fetching Session: ' + error.message);
@@ -62,7 +71,7 @@ const updateSession = async (sessionId, sessionData) => {
             },
             sessionData, {
                 new: true
-            });
+            }).populate('movie' , 'name').populate('room','name')
         return updatedSession
     } catch (error) {
         throw new Error('Error updating Session: ' + error.message);
@@ -94,6 +103,36 @@ const deleteSession = async (sessionId) => {
 
 // ---------------------------CLIENT FUNCTIONS------------------------
 
+const searchSessions = async (movieName) => {
+    try {
+        const query = {
+            deleted_at: null
+        };
+
+        const movies = await MovieModel.find({
+            name: {
+                $regex: movieName,
+                $options: 'i'
+            },
+            deleted_at : null
+        });
+
+        if (movies.length === 0) {
+            return [];
+        }
+
+
+
+        return movies;
+
+    } catch (error) {
+        throw new Error('Error fetching sessions: ' + error.message);
+    }
+};
+
+
+
+
 
 
 const getClientSessions = async () => {
@@ -101,7 +140,7 @@ const getClientSessions = async () => {
         const sessions = await Session.find({
                 deleted_at: null
             })
-            .populate('movie', 'name media duration description')
+            .populate('movie', 'name image duration description')
             .populate('room', 'name');
 
         const upcomingSessions = [];
@@ -110,12 +149,13 @@ const getClientSessions = async () => {
 
         for (let session of sessions) {
             const sessionTime = moment(session.displayTime);
-           
+
             if (currentTime.isBefore(sessionTime) && !uniqueMovieIds.has(session.movie._id)) {
                 upcomingSessions.push(session);
-                uniqueMovieIds.add(session.movie._id); 
+                uniqueMovieIds.add(session.movie._id);
             }
         }
+
 
         return upcomingSessions;
 
@@ -127,12 +167,12 @@ const getMovieSessions = async (id) => {
     try {
         const sessions = await Session.find({
                 deleted_at: null,
-                movie:id
+                movie: id
 
             })
             .populate('movie', 'name media duration description')
             .populate('room', 'name');
-            
+
         const upcomingSessions = [];
 
         const currentTime = moment();
@@ -143,7 +183,7 @@ const getMovieSessions = async (id) => {
                 upcomingSessions.push(session);
             }
         }
-        
+
 
         return upcomingSessions;
 
@@ -155,11 +195,11 @@ const getMovieSessions = async (id) => {
 const getSessionDetails = async (sessionId) => {
     try {
         const session = await Session.findOne({
-            _id: sessionId,
-            deleted_at: null
-        })
-        .populate('movie', 'name media duration description')
-        .populate('room', 'name');
+                _id: sessionId,
+                deleted_at: null
+            })
+            .populate('movie', 'name media duration description')
+            .populate('room', 'name');
 
         if (!session) {
             throw new Error('Session not found');
@@ -172,7 +212,7 @@ const getSessionDetails = async (sessionId) => {
             return session;
         }
 
-        return "This session isn't disponible anymore"; 
+        return "This session isn't disponible anymore";
     } catch (error) {
         throw new Error('Error fetching Session: ' + error.message);
     }
@@ -194,5 +234,6 @@ module.exports = {
     getClientSessions,
     getSessionDetails,
     getMovieSessions,
-    getSessionOfRoom
+    getSessionOfRoom,
+    searchSessions
 }

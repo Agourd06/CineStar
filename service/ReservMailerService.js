@@ -11,7 +11,7 @@ const sendReservationEmail = async (userEmail, reservationDetails) => {
         });
 
         const mailOptions = {
-            from: 'oualidagourd@gmail.com',
+            from: 'noreply@cineStar.com',
             to: userEmail,
             subject: 'Reservation Confirmation',
             html: `

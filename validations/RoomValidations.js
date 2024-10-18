@@ -11,12 +11,7 @@ const createRoomSchema = Joi.object({
         'number.min': "Room capacity can't be below 6 seats",
         'any.required': "Room capacity is required"
     }),
-    row_seats: Joi.number().integer().required().messages({
-        'number.base': 'Seats per each row must be a number',
-        'number.empty': 'Seats per each row is required',
-        'any.required': 'Seats per each row is required'
-    }),
-    room_type: Joi.string().valid('VIP', 'Normal').required().messages({
+    room_type: Joi.string().valid('VIP', 'Classic').required().messages({
         'any.only': 'Room type must be either VIP or Normal',
         'any.required': "Room type is required"
     }),
@@ -32,10 +27,7 @@ const updateRoomSchema = Joi.object({
         'number.base': 'Capacity must be a number',
         'number.min': 'Capacity must be at least 1',
     }),
-    row_seats: Joi.number().integer().optional().messages({
-        'number.base': 'Seats per each row must be a number',
-    }),
-    room_type: Joi.string().valid('VIP', 'Normal').optional().messages({
+    room_type: Joi.string().valid('VIP', 'Classic').optional().messages({
         'any.only': 'Room type must be either VIP or Normal',
     }),
 });

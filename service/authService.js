@@ -64,7 +64,7 @@ const sendPasswordResetEmail = async (email) => {
   const resetToken = jwt.sign({
     UserInfo: UserInfo
   }, process.env.SECRET, {
-    expiresIn: '1h'
+    expiresIn: '15m'
   });
 
   // Send email with reset link
@@ -76,7 +76,7 @@ const sendPasswordResetEmail = async (email) => {
     }
   });
 
-  const resetURL = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
+  const resetURL = `http://localhost:5173/auth/reset?token=${resetToken}`;
   const mailOptions = {
     to: user.email,
     from: process.env.EMAIL,
@@ -120,16 +120,12 @@ const sendPasswordResetEmail = async (email) => {
 };
 
 const resetPassword = async (token, newPassword) => {
-  // Verify the JWT token
   const decoded = jwt.verify(token, process.env.SECRET);
   const user = await User.findById(decoded.UserInfo.userId);
   if (!user) {
     throw new Error('User not found');
   }
 
-  // Hash the new password
-
-  // Update user's password
   user.password = newPassword;
   await user.save();
   return {

@@ -21,6 +21,12 @@ const reservationSchema = mongoose.Schema({
         type: Number, 
         required: [true,'Total price is obligatory']
     },
+    status: {
+        type: String,
+        enum: ['canceled', 'normal'],
+        default: 'normal',
+        required: [true, "Reservation status is required"]
+      },
     deleted_at: {
         type: Date, 
         default: null,

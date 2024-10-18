@@ -7,15 +7,21 @@ const {
 const {
     UserId
 } = require('../helpers/helpers');
+const {
+    response
+} = require("express");
 
 
 const createReservation = async (req, res) => {
     try {
         const {
             seat,
-            session
         } = req.body;
-        
+        const {
+            id
+        } = req.params
+
+
         let userId = UserId(req);
 
         const {
@@ -28,8 +34,8 @@ const createReservation = async (req, res) => {
         }
 
         // Checking if seat reserved already exist or not
-        const alreadyTakenSeats = await reservationService.checkAvailableSeats(session, seat);
-        
+        const alreadyTakenSeats = await reservationService.checkAvailableSeats(id, seat);
+
         if (alreadyTakenSeats.length > 0) {
             return res.status(400).json({
                 message: "there is Some taken seat chosed please check again for avaibility",
@@ -38,7 +44,7 @@ const createReservation = async (req, res) => {
         }
 
         // Calculate The price of reservations
-        const sessionData = await reservationService.reservSession(session);
+        const sessionData = await reservationService.reservSession(id);
         const seatPrice = sessionData.price;
         const totalPrice = seat.length * seatPrice;
 
@@ -46,11 +52,11 @@ const createReservation = async (req, res) => {
         const reservation = await reservationService.createReservation({
             seat,
             client: userId,
-            session,
+            session: id,
             totalPrice
         });
 
-        await mailerService.sendReservationEmail("agourdahmedamine96@gmail.com", reservation);
+        mailerService.sendReservationEmail("walidagourd@gmail.com", reservation);
 
         res.status(201).json({
             message: "Reservation created successfully",
@@ -148,10 +154,10 @@ const updateReserv = async (req, res) => {
             data: updatedReserv
         })
     } catch (error) {
-        console.error("error deleting reservation", error)
+        console.error("error updated reservation", error)
 
         res.status(500).json({
-            message: "Failed to delete reservation",
+            message: "Failed to updated reservation",
             error: error.message
         })
     }
@@ -185,11 +191,12 @@ const cancelReserv = async (req, res) => {
 }
 
 
+
 module.exports = {
     createReservation,
     clientReservations,
     getReservation,
     updateReserv,
     cancelReserv
-    
+
 }

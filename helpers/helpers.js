@@ -16,7 +16,7 @@ function UserId(req) {
         
         return decoded.UserInfo.userId;
     } catch (error) {
-        throw new Error('Invalid token or Authorization header');
+        throw new Error(error.message);
     }
 }
 

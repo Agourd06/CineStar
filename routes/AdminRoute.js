@@ -3,27 +3,30 @@ const router = express.Router();
 const AdminController = require('../controller/AdminController');
 const MovieController = require('../controller/MovieController');
 const RoomController = require('../controller/RoomController');
+const StatsController = require('../controller/StatsController');
 const SessionController = require('../controller/SessionController');
-const upload = require('../middleware/uploadMiddleWare')
+const multer = require('multer');
+const upload = require('../middleware/uploadMiddleWare');
+const { uploadMoviePoster } = require('../service/MovieService');
 
 
 
 //------------------------ Admins CRUD------------------------
-router.post("/create",AdminController.createAdmin)
-router.get("/admins",AdminController.getAdmins)
-router.get("/:id",AdminController.getAdmin)
-router.put("/update/:id",AdminController.updateAdmins)
-router.put("/delete/:id",AdminController.softDeleteAdmins)
+router.post("/create",AdminController.createUser)
 //------------------------ Admins CRUD------------------------
-
+//---------------- Users -------------------
+router.get("/users/all",AdminController.getUsersController)
+router.put("/delete/:id",AdminController.archiveUser)
+router.put("/update/:id",AdminController.updateUser)
+//---------------- Users -------------------
 
 
 
 //------------------------ Movie CRUD------------------------
-router.post("/movie/create",upload.single('media'),MovieController.createMovie)
+router.post("/movie/create", upload, uploadMoviePoster,MovieController.createMovie);
 router.get("/movies",MovieController.getAllMovies)
 router.get("/movie/:id",MovieController.getMovie)
-router.put("/movie/update/:id",MovieController.updateMovie)
+router.put("/movie/update/:id", upload, uploadMoviePoster,MovieController.updateMovie)
 router.put("/movie/delete/:id",MovieController.deleteMovie)
 //------------------------ Movie CRUD------------------------
 
@@ -49,5 +52,9 @@ router.put("/session/delete/:id",SessionController.deleteSession)
 //------------------------ Session CRUD------------------------
 
 
+
+//------------------------ Stats ------------------------
+router.get("/stats",StatsController.getDashboardStats)
+//------------------------ Stats ------------------------
 
 module.exports = router;

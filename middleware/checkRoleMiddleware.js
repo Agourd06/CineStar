@@ -22,7 +22,6 @@ const checkRole = (requiredRole) => {
           return res.status(403).json({ message: 'Access denied. Your role permissions cant go through this action.' });
         }
   
-        req.user = decoded; 
 
         next();
 

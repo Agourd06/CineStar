@@ -21,15 +21,11 @@ const createroom = async (req, res) => {
         const room = await roomService.createroom(req.body)
         return res.status(201).json({
             message: "room created successfully",
-            data: room
+            room: room
         })
     } catch (error) {
         console.error(error);
-        if (error.code === 11000) {
-            return res.status(400).json({
-                message: 'Room already exists'
-            });
-        }
+     
         res.status(500).json({
             message: 'Failed to create Room',
             error: error.message
@@ -41,7 +37,9 @@ const createroom = async (req, res) => {
 
 const getAllRooms = async (req, res) => {
     try {
-        const rooms = await roomService.getAllRooms()
+        const { page = 1, limit = 5 } = req.query;
+
+        const rooms = await roomService.getAllRooms(Number(page), Number(limit))
 
         res.status(200).json({
             success: true,
@@ -63,14 +61,11 @@ const getRoom = async (req, res) => {
         const {
             id
         } = req.params
-        const sessionsId = await sessionService.getSessionOfRoom(id)
-        const reservedSeats = await reservationService.getReservedSeats(sessionsId);
 
         const room = await roomService.getRoom(id);
 
         res.status(200).json({
             data: room,
-            reservedSeats: reservedSeats
         });
     } catch (error) {
         res.status(500).json({
@@ -106,11 +101,7 @@ const updateRoom = async (req, res) => {
         })
     } catch (error) {
         console.error("error updating room", error)
-        if (error.code = 11000) {
-            return res.status(400).json({
-                message: "room name already exists"
-            })
-        }
+      
         res.status(500).json({
             message: "Failed to update room",
             error: error.message
@@ -142,6 +133,10 @@ const deleteRoom = async (req, res) => {
         })
     }
 }
+
+
+
+
 
 
 module.exports = {

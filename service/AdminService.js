@@ -1,43 +1,52 @@
 const User = require('../model/UserModel');
 
-const createAdmin = async (adminData) => {
+const createUser = async (userData) => {
   try {
 
-    const admin = new User(adminData);
+    const user = new User(userData);
 
-    return await admin.save();
+    return await user.save();
   } catch (error) {
-    throw new Error('admins is not added : ' + error.message)
+    throw new Error('user is not added : ' + error.message)
   }
 }
 
 
 
-
-const getAdmins = async () => {
+const getUsers = async (adminId, page = 1, limit = 5) => {
   try {
-    const admins = await User.find({
-      role: 'admin',
-      deleted_at: null
-    });
-    return admins;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find({
+        _id: {
+          $ne: adminId
+        },
+        deleted_at : null
+      })
+      .skip(skip)
+      .sort({
+        createdAt: -1
+      })
+      .limit(limit);
+
+    return users;
   } catch (error) {
-    throw new Error('Error fetching admins: ' + error.message);
+    throw new Error('Error fetching users: ' + error.message);
   }
 };
 
-const getAdmin = async (adminId) => {
+
+const getUser = async (userId) => {
 
 
   try {
-    const admin = await User.findOne({
-      _id: adminId,
-      role: 'admin',
+    const user = await User.findOne({
+      _id: userId,
       deleted_at: null
     });
-    return admin;
+    return user;
   } catch (error) {
-    throw new Error('Error fetching admin: ' + error.message);
+    throw new Error('Error fetching user: ' + error.message);
   }
 }
 
@@ -61,21 +70,35 @@ const updateAdmins = async (AdminId, adminUpdateData) => {
 
 
 
-const softDeleteAdmins = async (AdminId) => {
+const archiveUser = async (userId) => {
   try {
-    const admin = await User.findOneAndUpdate({
-      _id: AdminId
-    }, {
-      deleted_at: new Date()
-    }, {
-      new: true
-    });
+    const user = await User.findOneAndUpdate({
+        _id: userId
+      },
 
-    if (!admin) {
+      [{
+        $set: {
+          deleted_at: {
+            $cond: {
+              if: {
+                $eq: ["$deleted_at", null]
+              },
+              then: new Date(),
+              else: null
+            }
+          }
+        }
+      }], {
+        new: true
+      }
+    );
+
+
+    if (!user) {
       throw new Error('Admin not found');
     }
 
-    return admin;
+    return user;
   } catch (error) {
     throw new Error('Error soft-deleting admin: ' + error.message);
   }
@@ -84,9 +107,9 @@ const softDeleteAdmins = async (AdminId) => {
 
 
 module.exports = {
-  createAdmin,
-  getAdmins,
-  getAdmin,
+  createUser,
+  getUsers,
+  getUser,
   updateAdmins,
-  softDeleteAdmins
+  archiveUser
 };
